@@ -31,16 +31,17 @@ def create_canvas():
   canvas.place(x=0, y=0)
   return root, canvas
 
-def set_number(filed):
+def set_number(field):
+  print(field)
   x = 0
   y = 0
   while x < NUMBER:
     while y < NUMBER:
-      num = filed[x][y]
+      num = field[x][y]
       center_x = POSITION["x"] + BORDER_WIDTH * x + BORDER_WIDTH / 2 + SQUARE_LENGTH * x + SQUARE_LENGTH / 2
       center_y = POSITION["y"] + BORDER_WIDTH * y + BORDER_WIDTH / 2 + SQUARE_LENGTH * y + SQUARE_LENGTH / 2
       canvas.create_rectangle(center_x - SQUARE_LENGTH / 2, center_y - SQUARE_LENGTH / 2, center_x + SQUARE_LENGTH / 2, center_y + SQUARE_LENGTH / 2, fill=CELL_COLOR, width=0)
-      if filed[x][y] == 0:
+      if field[x][y] == 0:
         canvas.create_text(center_x, center_y, justify="center", font=("", 70), tag="count_text")
       else:
         canvas.create_text(center_x, center_y, text=str(num), justify="center", font=("", 70), tag="count_text")
@@ -49,9 +50,13 @@ def set_number(filed):
     y = 0
   
 def operate(event):
+  global field
   print(event.keysym)
-  slide_number(field, event.keysym)
+  print(field)
+  new_field = slide_number(field, event.keysym)
+  field = new_field
   appear_number(field)
+  
 
 def select_number(field): #NONEの座標調べ
   x = random.randint(0,NUMBER - 1)
@@ -67,6 +72,7 @@ def appear_number(field):#空のますに出現させる
   number = 2 if numbertype >= 0 and numbertype <= 8 else 4
   field[x][y] = number
   set_number(field)
+
 
 def delet_zero(field):
   for i in range(4):
@@ -101,17 +107,40 @@ def reverse(field):
   for i in range(NUMBER):
       field[i].reverse()
 
+def rotate(array, is_right=True):##ぱくり
+    _array = [[None for i in range(4)] for j in range(4)]
+    for i in range(len(array)):
+      for j in range(len(array[0])):
+        if is_right:
+          _array[i][len(array) - 1 - j] = array[j][i]
+        else:
+          _array[len(array) - 1 - i][j] = array[j][i]
+    return _array
+
 def slide_number(field,command):#0のます移動
   if command == 'Up':
     new_field = delet_zero(field)
-    print(new_field)
     set_number(new_field)
+    return new_field
   elif command == 'Down':
     reverse(field)
     new_field = delet_zero(field)
     reverse(new_field)
-    print(new_field)
     set_number(new_field)
+    return new_field
+  elif command == 'Right':
+    rolled = rotate(field, is_right=True)
+    rolled_field = delet_zero(rolled)
+    new_field = rotate(rolled_field, is_right=False)
+    set_number(new_field)
+    return new_field
+  else:
+    rolled = rotate(field, is_right=False)
+    rolled_field = delet_zero(rolled)
+    new_field = rotate(rolled_field, is_right=True)
+    set_number(new_field)
+    return new_field
+
 
 def play():
   global canvas
