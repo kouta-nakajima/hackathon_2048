@@ -10,7 +10,7 @@ POSITION = {"x": 8, "y": 8}
 BORDER_WIDTH = 8
 NUMBER = 4
 LENGTH = SQUARE_LENGTH * NUMBER + BORDER_WIDTH * NUMBER
-CELL_COLOR = '#cbbeb5'
+CELL_COLORS = {0:'#cbbeb5', 2:'rosybrown', 4:'indianred', 8:'brown', 16:'firebrick', 32:'maroon', 64:'darkred', 128:'red', 256:'gold', 512:'orange', 1024:'darkorange',2048:'purple'}
 BORDER_COLOR = '#b2a698'
 field = [[0] * NUMBER for i in range(4)]
 
@@ -32,7 +32,6 @@ def create_canvas():
   return root, canvas
 
 def set_number(field):
-  print(field)
   x = 0
   y = 0
   while x < NUMBER:
@@ -40,7 +39,7 @@ def set_number(field):
       num = field[x][y]
       center_x = POSITION["x"] + BORDER_WIDTH * x + BORDER_WIDTH / 2 + SQUARE_LENGTH * x + SQUARE_LENGTH / 2
       center_y = POSITION["y"] + BORDER_WIDTH * y + BORDER_WIDTH / 2 + SQUARE_LENGTH * y + SQUARE_LENGTH / 2
-      canvas.create_rectangle(center_x - SQUARE_LENGTH / 2, center_y - SQUARE_LENGTH / 2, center_x + SQUARE_LENGTH / 2, center_y + SQUARE_LENGTH / 2, fill=CELL_COLOR, width=0)
+      canvas.create_rectangle(center_x - SQUARE_LENGTH / 2, center_y - SQUARE_LENGTH / 2, center_x + SQUARE_LENGTH / 2, center_y + SQUARE_LENGTH / 2, fill=CELL_COLORS[num], width=0)
       if field[x][y] == 0:
         canvas.create_text(center_x, center_y, justify="center", font=("", 70), tag="count_text")
       else:
@@ -51,13 +50,10 @@ def set_number(field):
   
 def operate(event):
   global field
-  print(event.keysym)
-  print(field)
   new_field = slide_number(field, event.keysym)
   field = new_field
   appear_number(field)
   
-
 def select_number(field): #NONEの座標調べ
   x = random.randint(0,NUMBER - 1)
   y = random.randint(0,NUMBER - 1)
@@ -72,7 +68,6 @@ def appear_number(field):#空のますに出現させる
   number = 2 if numbertype >= 0 and numbertype <= 8 else 4
   field[x][y] = number
   set_number(field)
-
 
 def delet_zero(field):
   for i in range(4):
@@ -140,7 +135,6 @@ def slide_number(field,command):#0のます移動
     new_field = rotate(rolled_field, is_right=True)
     set_number(new_field)
     return new_field
-
 
 def play():
   global canvas
