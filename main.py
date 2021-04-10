@@ -68,29 +68,50 @@ def appear_number(field):#空のますに出現させる
   field[x][y] = number
   set_number(field)
 
+def delet_zero(field):
+  for i in range(4):
+    counter = 0 #0のマスの数count
+    new_list = []
+    for j in field[i]:
+      if j == 0:
+        counter += 1
+      else:
+        new_list.append(j)
+    for k in range(counter):
+      new_list.append(0)
+    field[i] = new_list
+  new_field = calculate(field) 
+  return new_field
+
+def calculate(field): #足し算
+  for i in range(4):
+    new_list = field[i]
+    if new_list[0] == new_list[1] and new_list[2] == new_list[3]:
+      new_list = [new_list[0] * 2, new_list[2] * 2, 0, 0]
+    elif new_list[0] == new_list[1]:
+      new_list = [new_list[0] * 2, new_list[2], new_list[3], 0]
+    elif new_list[1] == new_list[2]:
+      new_list = [new_list[0], new_list[1] * 2, new_list[3], 0]
+    elif new_list[2] == new_list[3]:
+      new_list = [new_list[0], new_list[1], new_list[2] * 2 , 0]
+    field[i] = new_list
+  return field 
+
+def reverse(field):
+  for i in range(NUMBER):
+      field[i].reverse()
+
 def slide_number(field,command):#0のます移動
   if command == 'Up':
-    for i in range(4):
-      counter = 0 #0のマスの数count
-      new_list = []
-      for j in field[i]:
-        if j == 0:
-          counter += 1
-        else:
-          new_list.append(j)
-      for k in range(counter):
-        new_list.append(0)
-      if new_list[0] == new_list[1] and new_list[2] == new_list[3]:
-        new_list = [new_list[0] * 2, new_list[2] * 2, 0, 0]
-      elif new_list[0] == new_list[1]:
-        new_list = [new_list[0] * 2, new_list[2], new_list[3], 0]
-      elif new_list[1] == new_list[2]:
-        new_list = [new_list[0], new_list[1] * 2, new_list[3], 0]
-      elif new_list[2] == new_list[3]:
-        new_list = [new_list[0], new_list[1], new_list[2] * 2 , 0]
-      field[i] = new_list
-    print(field)
-    set_number(field)
+    new_field = delet_zero(field)
+    print(new_field)
+    set_number(new_field)
+  elif command == 'Down':
+    reverse(field)
+    new_field = delet_zero(field)
+    reverse(new_field)
+    print(new_field)
+    set_number(new_field)
 
 def play():
   global canvas
