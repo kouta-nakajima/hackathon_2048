@@ -3,20 +3,18 @@ import math
 import random
 
 canvas = None
-
 SQUARE_LENGTH = 100
 RADIUS = SQUARE_LENGTH / 2 - 5
 POSITION = {"x": 8, "y": 8}
 BORDER_WIDTH = 8
 NUMBER = 4
 LENGTH = SQUARE_LENGTH * NUMBER + BORDER_WIDTH * NUMBER
-CELL_COLORS = {0:'#cbbeb5', 2:'rosybrown', 4:'indianred', 8:'brown', 16:'firebrick', 32:'maroon', 64:'darkred', 128:'red', 256:'gold', 512:'orange', 1024:'darkorange',2048:'purple'}
+CELL_COLORS = {0:'#cbbeb5', 2:'rosybrown', 4:'indianred', 8:'brown', 16:'firebrick', 32:'maroon', 64:'darkred', 128:'red', 256:'gold', 512:'orange', 1024:'darkorange', 2048:'purple'}
 BORDER_COLOR = '#b2a698'
 field = [[0] * NUMBER for i in range(4)]
 
 def set_field():
   canvas.create_rectangle(POSITION["x"], POSITION["y"], LENGTH + POSITION["x"], LENGTH + POSITION["y"], fill='#cbbeb5', width=BORDER_WIDTH, outline=BORDER_COLOR)
-
   for i in range(NUMBER - 1):
     x = POSITION["x"] + SQUARE_LENGTH * (i + 1) + BORDER_WIDTH * i + BORDER_WIDTH
     y = POSITION["y"] + SQUARE_LENGTH * (i + 1) + BORDER_WIDTH * i + BORDER_WIDTH
@@ -54,7 +52,17 @@ def operate(event):
   field = new_field
   appear_number(field)
   
+def gameover():
+  label1 = tk.Label(text= 'Game over', fg = 'red')
+  label1.place(x = LENGTH * 0.5, y= LENGTH *0.5)
+
 def select_number(field): #NONEの座標調べ
+  counter = 0
+  for i in field:
+    counter += i.count(0)
+  if counter == 0:
+    gameover()
+    return
   x = random.randint(0,NUMBER - 1)
   y = random.randint(0,NUMBER - 1)
   while field[x][y]:
